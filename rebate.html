@@ -100,12 +100,19 @@ h1 { font-size:clamp(40px,7vw,72px); line-height:1; letter-spacing:-.055em; font
     <input type="number" id="amount" placeholder="输入贷款金额" oninput="calc()" value="100000">
   </div>
 
+  <div class="form-group">
+    <label>NB金额（元）<span style="color:var(--muted);font-weight:400;"> · 非必填</span></label>
+    <input type="number" id="nb-amount" placeholder="输入 NB 金额（选填）" oninput="calc()">
+  </div>
+
     </section>
 
   <section class="panel result" id="result" style="display:none;">
     <div class="row"><span class="r-label">对客利率</span><span class="r-value" id="r-rate">-</span></div>
     <div class="row"><span class="r-label">内返比例</span><span class="r-value" id="r-rebate-pct">-</span></div>
-    <div class="row total"><span class="r-label">内返金额</span><span class="r-value" id="r-rebate">-</span></div>
+    <div class="row"><span class="r-label">贷款内返</span><span class="r-value" id="r-loan">-</span></div>
+    <div class="row" id="nb-row"><span class="r-label">NB 内返</span><span class="r-value" id="r-nb">-</span></div>
+    <div class="row total"><span class="r-label">合计内返</span><span class="r-value" id="r-rebate">-</span></div>
   </section>
   </main>
 
@@ -167,6 +174,7 @@ function calc() {
   const pid = parseInt(document.getElementById('product').value);
   const rid = parseInt(document.getElementById('rate').value);
   const amount = parseFloat(document.getElementById('amount').value) || 0;
+  const nbAmount = parseFloat(document.getElementById('nb-amount').value) || 0;
 
   if (isNaN(rid)) return;
   const row = data[rid];
@@ -178,19 +186,31 @@ function calc() {
   if (rebatePct === null || rebatePct === undefined || rebatePct === '/') {
     document.getElementById('r-rate').textContent = (rate*100).toFixed(2) + '%';
     document.getElementById('r-rebate-pct').textContent = '该产品不支持此利率';
+    document.getElementById('r-loan').textContent = '-';
+    document.getElementById('r-nb').textContent = '-';
     document.getElementById('r-rebate').textContent = '-';
     document.getElementById('info').innerHTML = '';
+    document.getElementById('nb-row').style.display = '';
     return;
   }
 
-  const rebate = amount * rebatePct;
+  const loanRebate = amount * rebatePct;
+  const nbRebate = nbAmount * rebatePct;
+  const total = loanRebate + nbRebate;
 
   document.getElementById('r-rate').textContent = (rate*100).toFixed(2) + '%';
   document.getElementById('r-rebate-pct').textContent = (rebatePct*100).toFixed(1) + '%';
-  document.getElementById('r-rebate').textContent = '¥ ' + rebate.toLocaleString('zh-CN', {minimumFractionDigits:0, maximumFractionDigits:0});
+  document.getElementById('r-loan').textContent = '¥ ' + loanRebate.toLocaleString('zh-CN', {minimumFractionDigits:0, maximumFractionDigits:0});
+  document.getElementById('r-nb').textContent = nbAmount > 0 ? '¥ ' + nbRebate.toLocaleString('zh-CN', {minimumFractionDigits:0, maximumFractionDigits:0}) : '—';
+  document.getElementById('r-rebate').textContent = '¥ ' + total.toLocaleString('zh-CN', {minimumFractionDigits:0, maximumFractionDigits:0});
+  document.getElementById('nb-row').style.display = nbAmount > 0 ? '' : 'none';
 
-  document.getElementById('info').innerHTML =
-    '贷款金额 <span>¥' + amount.toLocaleString() + '</span> × 内返比例 <span>' + (rebatePct*100).toFixed(1) + '%</span> = 内返金额 <span>¥' + rebate.toLocaleString('zh-CN', {minimumFractionDigits:0, maximumFractionDigits:0}) + '</span>';
+  var infoParts = ['贷款 <span>¥' + amount.toLocaleString() + '</span> × <span>' + (rebatePct*100).toFixed(1) + '%</span> = <span>¥' + loanRebate.toLocaleString('zh-CN', {minimumFractionDigits:0, maximumFractionDigits:0}) + '</span>'];
+  if (nbAmount > 0) {
+    infoParts.push('NB <span>¥' + nbAmount.toLocaleString() + '</span> × <span>' + (rebatePct*100).toFixed(1) + '%</span> = <span>¥' + nbRebate.toLocaleString('zh-CN', {minimumFractionDigits:0, maximumFractionDigits:0}) + '</span>');
+  }
+  infoParts.push('合计 <span>¥' + total.toLocaleString('zh-CN', {minimumFractionDigits:0, maximumFractionDigits:0}) + '</span>');
+  document.getElementById('info').innerHTML = infoParts.join('<br>');
 }
 
 updateRates();

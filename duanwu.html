@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>端午出游攻略</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif; background: #f5f3ea; color: #2d3436; max-width: 860px; margin: 0 auto; padding: 30px 20px 60px; }
+.header { text-align: center; padding: 30px 0 25px; }
+.header h1 { font-size: 34px; }
+.header .sub { font-size: 15px; color: #636e72; margin-top: 6px; }
+.header .date { display: inline-block; margin-top: 10px; padding: 5px 18px; background: #ffeaa7; border-radius: 20px; font-size: 14px; font-weight: 600; }
+
+.card { background: #fff; border-radius: 14px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; cursor: pointer; transition: 0.2s; }
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+.card-header { display: flex; align-items: center; padding: 18px 22px; gap: 16px; position: relative; }
+.card-header .bar { width: 4px; height: 48px; border-radius: 2px; flex-shrink: 0; }
+.card-header .emoji { font-size: 36px; flex-shrink: 0; }
+.card-header .info { flex: 1; }
+.card-header h3 { font-size: 20px; margin-bottom: 3px; }
+.card-header .tags { display: flex; gap: 8px; }
+.card-header .tags span { padding: 2px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; }
+.card-header .arrow { font-size: 18px; color: #b2bec3; transition: 0.3s; }
+.card.open .arrow { transform: rotate(180deg); }
+
+.card-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; background: #fafaf8; }
+.card.open .card-body { max-height: 400px; padding: 0 22px 20px; }
+.card-body .section { margin-bottom: 14px; }
+.card-body .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #b2bec3; margin-bottom: 6px; }
+.card-body ul { list-style: none; font-size: 14px; color: #636e72; line-height: 1.8; }
+.card-body ul li::before { content: "✦ "; font-size: 10px; color: #dfe6e9; }
+.card-body .quick { display: flex; gap: 20px; flex-wrap: wrap; }
+.card-body .quick-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #636e72; }
+.card-body .quick-item .qi-icon { font-size: 15px; }
+.card-body a { color: #0984e3; text-decoration: none; border-bottom: 1px dotted; }
+.card-body a:hover { border-bottom-style: solid; }
+
+.footer { margin-top: 24px; background: #2d3436; color: #fff; border-radius: 14px; padding: 22px; text-align: center; }
+.footer .warn { font-size: 14px; color: #ffeaa7; }
+.footer .small { font-size: 12px; color: #b2bec3; margin-top: 4px; }
+
+.tip-banner { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 10px; padding: 12px 18px; margin-bottom: 20px; font-size: 13px; color: #856404; display: flex; align-items: center; gap: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🐉 端午出游攻略</h1>
+  <div class="sub">杭州出发 · 3天2晚 · 点击卡片查看详情</div>
+  <div class="date">📅 端午假期 6/19 — 6/21</div>
+</div>
+
+<div class="tip-banner">
+  ☔ 端午期间正值梅雨季，杭州持续降雨，出行记得带伞、查天气
+</div>
+
+<!-- 桐庐 -->
+<div class="card" onclick="this.classList.toggle('open')">
+  <div class="card-header">
+    <div class="bar" style="background:#0984e3;"></div>
+    <div class="emoji">🛶</div>
+    <div class="info">
+      <h3>桐庐 · 富春江</h3>
+      <div class="tags">
+        <span style="background:#0984e3;color:#fff;">山水秘境</span>
+        <span style="background:#dfe6e9;color:#636e72;">🚗 车程 1h</span>
+        <span style="background:#55efc4;color:#2d3436;">最近</span>
+      </div>
+    </div>
+    <div class="arrow">▼</div>
+  </div>
+  <div class="card-body">
+    <div class="section">
+      <div class="section-title">📋 行程建议</div>
+      <ul>
+        <li><b>Day1：</b>杭州出发 → 富春江竹筏漂流 → 傍晚漫步芦茨村 → 夜宿桐庐民宿</li>
+        <li><b>Day2：</b>上午严子陵钓台登高瞰江 → 下午大奇山徒步吸氧 → 返程</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">🔥 必体验</div>
+      <ul>
+        <li>富春江竹筏 — "天下独绝"山水画卷</li>
+        <li>芦茨村 — 艾草粽、土鸡汤端午特色</li>
+        <li>大奇山 — 林间溪水瀑布，6月体感极舒适</li>
+      </ul>
+    </div>
+    <div class="quick">
+      <div class="quick-item"><span class="qi-icon">💰</span> 人均 ¥600-800</div>
+      <div class="quick-item"><span class="qi-icon">🏡</span> 芦茨村/桐庐城区</div>
+      <div class="quick-item"><span class="qi-icon">📍</span> 可当天往返</div>
+    </div>
+  </div>
+</div>
+
+<!-- 湖州 -->
+<div class="card" onclick="this.classList.toggle('open')">
+  <div class="card-header">
+    <div class="bar" style="background:#00b894;"></div>
+    <div class="emoji">🎋</div>
+    <div class="info">
+      <h3>湖州 · 莫干山</h3>
+      <div class="tags">
+        <span style="background:#00b894;color:#fff;">竹海避暑</span>
+        <span style="background:#dfe6e9;color:#636e72;">🚗 车程 1.5h</span>
+      </div>
+    </div>
+    <div class="arrow">▼</div>
+  </div>
+  <div class="card-body">
+    <div class="section">
+      <div class="section-title">📋 行程建议</div>
+      <ul>
+        <li><b>Day1：</b>杭州 → 莫干山，剑池、芦花荡 → 逛善琏古镇 → 住山野民宿</li>
+        <li><b>Day2：</b>竹林步道徒步 → 端午市集、射五毒 → 返程</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">🔥 必体验</div>
+      <ul>
+        <li>善琏古镇 — 包粽祈福、艾草布景、湖笔手作</li>
+        <li>莫干山竹海步道 — 清风拂面、清凉透气</li>
+        <li>端午限定 — 古风游园、射五毒、香囊DIY</li>
+      </ul>
+    </div>
+    <div class="quick">
+      <div class="quick-item"><span class="qi-icon">💰</span> 人均 ¥1000-1500</div>
+      <div class="quick-item"><span class="qi-icon">🏡</span> 莫干山民宿群</div>
+      <div class="quick-item"><span class="qi-icon">💑</span> 情侣/亲子首选</div>
+    </div>
+  </div>
+</div>
+
+<!-- 安吉 -->
+<div class="card" onclick="this.classList.toggle('open')">
+  <div class="card-header">
+    <div class="bar" style="background:#f9a825;"></div>
+    <div class="emoji">⛅</div>
+    <div class="info">
+      <h3>安吉 · 云上草原</h3>
+      <div class="tags">
+        <span style="background:#f9a825;color:#2d3436;">高山清凉</span>
+        <span style="background:#dfe6e9;color:#636e72;">🚗 车程 1.5h</span>
+        <span style="background:#00b894;color:#fff;">14.7℃</span>
+      </div>
+    </div>
+    <div class="arrow">▼</div>
+  </div>
+  <div class="card-body">
+    <div class="section">
+      <div class="section-title">📋 行程建议</div>
+      <ul>
+        <li><b>Day1：</b>杭州 → 安吉，下午玩高山草原、悬崖秋千 → 夜游/温汤 → 住度假区</li>
+        <li><b>Day2：</b>上午亲子/轻松项目 → 中午退房返程</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">🔥 必体验</div>
+      <ul>
+        <li>海拔1168m — 年平均温度仅14.7℃，植被覆盖率93.2%</li>
+        <li>悬崖秋千、玻璃栈道、高山草原</li>
+        <li>星空露营 + 云海日出</li>
+      </ul>
+    </div>
+    <div class="quick">
+      <div class="quick-item"><span class="qi-icon">💰</span> 门票+住宿 ¥800-1200</div>
+      <div class="quick-item"><span class="qi-icon">🏡</span> 度假区内酒店</div>
+      <div class="quick-item"><span class="qi-icon">🧥</span> 记得带薄外套</div>
+    </div>
+  </div>
+</div>
+
+<!-- 衢州 -->
+<div class="card" onclick="this.classList.toggle('open')">
+  <div class="card-header">
+    <div class="bar" style="background:#d63031;"></div>
+    <div class="emoji">🍜</div>
+    <div class="info">
+      <h3>衢州 · 古城</h3>
+      <div class="tags">
+        <span style="background:#d63031;color:#fff;">美食之都</span>
+        <span style="background:#dfe6e9;color:#636e72;">🚄 高铁 1h</span>
+        <span style="background:#ff7675;color:#fff;">景区免费</span>
+      </div>
+    </div>
+    <div class="arrow">▼</div>
+  </div>
+  <div class="card-body">
+    <div class="section">
+      <div class="section-title">📋 行程建议</div>
+      <ul>
+        <li><b>Day1：</b>高铁出发 → 入住水亭门 → 北门街+孔庙 → 夜游水亭门</li>
+        <li><b>Day2：</b>江郎山(世界遗产) → 廿八都古镇 → 返程</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">🍲 必吃清单</div>
+      <ul>
+        <li>三头一掌 — 兔头鸭头鱼头鸭掌，衢州辣味灵魂</li>
+        <li>烤饼 — 梅干菜肉馅，5元/个，炭火现烤</li>
+        <li>水晶糕、龙游发糕、开化清水鱼</li>
+      </ul>
+    </div>
+    <div class="quick">
+      <div class="quick-item"><span class="qi-icon">💰</span> 人均 ¥800（性价比之王）</div>
+      <div class="quick-item"><span class="qi-icon">🏡</span> 水亭门/北门街民宿</div>
+      <div class="quick-item"><span class="qi-icon">🎫</span> 核心景区大面积免费</div>
+    </div>
+  </div>
+</div>
+
+<!-- 丽水 -->
+<div class="card" onclick="this.classList.toggle('open')">
+  <div class="card-header">
+    <div class="bar" style="background:#6c5ce7;"></div>
+    <div class="emoji">🌿</div>
+    <div class="info">
+      <h3>丽水 · 缙云 & 松阳</h3>
+      <div class="tags">
+        <span style="background:#6c5ce7;color:#fff;">浙南秘境</span>
+        <span style="background:#dfe6e9;color:#636e72;">🚄 高铁 1-2h</span>
+        <span style="background:#00b894;color:#fff;">仅25℃</span>
+      </div>
+    </div>
+    <div class="arrow">▼</div>
+  </div>
+  <div class="card-body">
+    <div class="section">
+      <div class="section-title">📋 行程建议（3天2晚）</div>
+      <ul>
+        <li><b>Day1：</b>高铁至丽水 → 古堰画乡，坐画舫、千年古樟群 → 夜宿画乡</li>
+        <li><b>Day2：</b>缙云仙都鼎湖峰(晨雾绝美) → 岩宕书房 → 朱潭山</li>
+        <li><b>Day3：</b>松阳杨家堂村(金色布达拉宫) → 酉田村 → 返程</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">🍲 必吃清单</div>
+      <ul>
+        <li>缙云烧饼 — 5元/个，景區外老夫妇摊最正宗</li>
+        <li>敲肉羹、安仁鱼头汤、松阳煨盐鸡(68元一只)</li>
+      </ul>
+    </div>
+    <div class="quick">
+      <div class="quick-item"><span class="qi-icon">💰</span> 人均 ¥900</div>
+      <div class="quick-item"><span class="qi-icon">🏡</span> 古村精品民宿</div>
+      <div class="quick-item"><span class="qi-icon">🎫</span> 松阳古村全部免费</div>
+    </div>
+  </div>
+</div>
+
+<!-- 嘉兴 -->
+<div class="card" onclick="this.classList.toggle('open')">
+  <div class="card-header">
+    <div class="bar" style="background:#e17055;"></div>
+    <div class="emoji">🏮</div>
+    <div class="info">
+      <h3>嘉兴 · 乌镇</h3>
+      <div class="tags">
+        <span style="background:#e17055;color:#fff;">水乡端午</span>
+        <span style="background:#dfe6e9;color:#636e72;">🚄 高铁 1h</span>
+        <span style="background:#d63031;color:#fff;">氛围最浓</span>
+      </div>
+    </div>
+    <div class="arrow">▼</div>
+  </div>
+  <div class="card-body">
+    <div class="section">
+      <div class="section-title">📋 行程建议</div>
+      <ul>
+        <li><b>Day1：</b>高铁至桐乡 → 乌镇西栅 → 龙船灯会 → 端阳大集 → 住古镇</li>
+        <li><b>Day2：</b>体验包粽子/斗草/射五毒 → 东栅漫步 → 午后返程</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">🔥 必体验</div>
+      <ul>
+        <li>龙船灯会 — 千年古镇传承的端午传统</li>
+        <li>端阳大集 — 包粽子、斗草、丢沙包、射五毒</li>
+        <li>非遗手作 — 编五彩绳、古法香囊</li>
+      </ul>
+    </div>
+    <div class="quick">
+      <div class="quick-item"><span class="qi-icon">💰</span> 人均 ¥800-1200</div>
+      <div class="quick-item"><span class="qi-icon">🏡</span> 西栅/东栅民宿</div>
+      <div class="quick-item"><span class="qi-icon">🎫</span> 门票 ¥190（东西栅联票）</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="warn">🎯 我的推荐：想近→桐庐 | 想凉快→安吉/丽水 | 想吃→衢州 | 想过端午→乌镇</div>
+  <div class="small">祝端午安康，玩得开心！🐲</div>
+</div>
+
+<script>
+// 默认展开第一个卡片
+document.querySelector('.card').classList.add('open');
+</script>
+</body>
+</html>

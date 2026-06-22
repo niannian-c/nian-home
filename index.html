@@ -6,127 +6,209 @@
 <title>NIAN</title>
 <style>
   :root {
-    --bg: #fafafa;
-    --fg: #1a1a1a;
-    --muted: #8a8a8a;
-    --line: #e5e5e5;
-    --card: #f5f5f5;
-    --accent: #0066ff;
+    --bg: #f5f5f7;
+    --fg: #1d1d1f;
+    --muted: #6e6e73;
+    --soft: #86868b;
+    --line: rgba(29, 29, 31, .12);
+    --card: rgba(255, 255, 255, .72);
+    --card-solid: #fff;
+    --accent: #0071e3;
+    --accent-2: #34c759;
+    --shadow: 0 24px 70px rgba(0, 0, 0, .10);
+    --radius: 28px;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
-    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
-    background: var(--bg); color: var(--fg); line-height: 1.6;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+    background:
+      radial-gradient(circle at 18% 12%, rgba(0, 113, 227, .13), transparent 30%),
+      radial-gradient(circle at 88% 4%, rgba(52, 199, 89, .13), transparent 26%),
+      linear-gradient(180deg, #fbfbfd 0%, var(--bg) 54%, #fff 100%);
+    color: var(--fg);
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--accent); }
+  button, input { font: inherit; }
 
-  /* ---- lock screen ---- */
   #lock-screen {
     position: fixed; inset: 0; z-index: 999;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--bg); flex-direction: column; gap: 18px;
+    display: grid; place-items: center;
+    background:
+      radial-gradient(circle at top, rgba(0,113,227,.18), transparent 34%),
+      linear-gradient(180deg, #fff, #f5f5f7);
+    padding: 24px;
   }
-  #lock-screen .lock-name { font-size: 32px; font-weight:800; letter-spacing: -1px; }
-  #lock-screen .lock-sub  { font-size: 14px; color: var(--muted); }
+  .lock-panel {
+    width: min(360px, 100%);
+    padding: 34px;
+    border: 1px solid rgba(255,255,255,.8);
+    border-radius: 30px;
+    background: rgba(255,255,255,.76);
+    box-shadow: var(--shadow);
+    text-align: center;
+    backdrop-filter: blur(22px);
+  }
+  .lock-name { font-size: 42px; font-weight: 800; letter-spacing: -.03em; }
+  .lock-sub { margin: 8px 0 22px; color: var(--muted); font-size: 15px; }
   #lock-screen input {
-    width: 200px; padding: 10px 14px; border: 2px solid var(--line);
-    border-radius: 6px; font-size: 16px; text-align: center;
-    font-family: inherit; outline: none; background: #fff; transition: border .2s;
+    width: 100%; height: 48px; padding: 0 18px;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: rgba(255,255,255,.9); text-align: center; outline: none;
   }
-  #lock-screen input:focus { border-color: var(--fg); }
+  #lock-screen input:focus { border-color: rgba(0,113,227,.55); box-shadow: 0 0 0 4px rgba(0,113,227,.12); }
   #lock-screen button {
-    padding: 10px 32px; border: none; border-radius: 6px;
-    background: var(--fg); color: #fff; font-size: 14px;
-    cursor: pointer; font-family: inherit; font-weight: 600;
+    width: 100%; height: 48px; margin-top: 12px;
+    border: 0; border-radius: 999px;
+    background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;
   }
-  #lock-screen .lock-err { color: #e00; font-size: 13px; min-height: 18px; }
+  #lock-screen .lock-err { min-height: 18px; margin-top: 12px; color: #d70015; font-size: 13px; }
 
   #main { display: none; }
   body.unlocked #lock-screen { display: none; }
   body.unlocked #main { display: block; }
 
-  /* ---- layout ---- */
-  .wrap { max-width: 680px; margin: 0 auto; padding: 0 24px; }
-
-  /* nav */
-  nav { display: flex; justify-content: space-between; align-items: center; padding: 28px 0; }
-  nav .logo { font-size: 22px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-  nav .links { display: flex; gap: 32px; font-size: 14px; }
-  nav .links a { color: var(--muted); }
-  nav .links a:hover { color: var(--fg); text-decoration: none; }
-
-  /* hero */
-  .hero { padding: 64px 0 48px; }
-  .hero h1 { font-size: 40px; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
-  .hero p  { font-size: 16px; color: var(--muted); max-width: 460px; }
-  .hero .loc { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; font-size: 13px; color: var(--muted); }
-  .hero .loc .dot { width: 6px; height: 6px; border-radius: 50%; background: #4caf50; }
-
-  /* section */
-  section { padding: 48px 0; }
-  section h2 { font-size: 20px; font-weight: 700; margin-bottom: 24px; letter-spacing: -0.5px; }
-
-  /* card grid */
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-  .grid .card {
-    background: var(--card); padding: 24px; border-radius: 2px; transition: background .2s;
-  }
-  .grid .card:hover { background: #eee; }
-  .grid .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-  .grid .card p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
-  .grid .card .tag { display: inline-block; margin-top: 10px; font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
-
-  /* projects - horizontal */
-  .proj-list { display: flex; flex-direction: column; }
-  .proj-item {
+  .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+  nav {
+    position: sticky; top: 0; z-index: 10;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 0; border-bottom: 1px solid var(--line);
+    height: 64px; margin: 0 auto;
+    backdrop-filter: saturate(180%) blur(20px);
   }
-  .proj-item:first-child { border-top: 1px solid var(--line); }
-  .proj-item h3 { font-size: 16px; font-weight: 700; }
-  .proj-item p  { font-size: 13px; color: var(--muted); margin-top: 2px; }
-  .proj-item .proj-tag {
-    font-size: 11px; font-weight: 700; padding: 4px 12px;
-    border: 1.5px solid var(--fg); border-radius: 20px;
-    white-space: nowrap; transition: .2s;
+  nav::before {
+    content: ""; position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: -1;
+    background: rgba(245,245,247,.78); border-bottom: 1px solid rgba(0,0,0,.06);
   }
-  .proj-item .proj-tag:hover { background: var(--fg); color: #fff; text-decoration: none; }
+  .logo { font-size: 18px; font-weight: 800; letter-spacing: -.01em; }
+  .links { display: flex; gap: 26px; color: var(--muted); font-size: 13px; }
+  .links a { padding: 8px 0; }
 
-  /* contact */
-  .contact-list { display: flex; gap: 2px; }
-  .contact-item {
-    flex: 1; background: var(--card); padding: 20px; border-radius: 2px;
-    display: flex; align-items: center; gap: 10px;
+  .hero {
+    min-height: calc(100vh - 64px);
+    display: grid; align-content: center;
+    padding: 72px 0 96px;
+    text-align: center;
   }
-  .contact-item .ci-symbol { font-size: 20px; color: var(--muted); }
-  .contact-item .ci-label  { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  .contact-item .ci-value  { font-size: 14px; font-weight: 600; }
-
-  /* footer */
-  footer {
-    padding: 32px 0; border-top: 1px solid var(--line); margin-top: 48px;
-    font-size: 12px; color: var(--muted); display: flex; justify-content: space-between;
+  .eyebrow { color: var(--accent); font-size: 17px; font-weight: 700; margin-bottom: 14px; }
+  .hero h1 {
+    max-width: 920px; margin: 0 auto;
+    font-size: clamp(48px, 8vw, 92px);
+    line-height: .98; letter-spacing: -.055em; font-weight: 800;
   }
+  .hero p {
+    max-width: 680px; margin: 26px auto 0;
+    color: var(--muted); font-size: clamp(19px, 2.5vw, 28px); line-height: 1.25;
+  }
+  .hero-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 0 22px; border-radius: 999px;
+    font-size: 16px; font-weight: 600;
+  }
+  .btn.primary { background: var(--accent); color: #fff; }
+  .btn.secondary { color: var(--accent); background: rgba(0,113,227,.08); }
+  .hero-device {
+    width: min(760px, 100%); margin: 58px auto 0; padding: 12px;
+    border-radius: 42px; background: #111; box-shadow: 0 40px 100px rgba(0,0,0,.22);
+  }
+  .device-screen {
+    min-height: 280px; border-radius: 32px; overflow: hidden; padding: 34px;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,.96), rgba(245,245,247,.74)),
+      radial-gradient(circle at 72% 24%, rgba(0,113,227,.22), transparent 36%);
+    text-align: left;
+  }
+  .screen-top { display: flex; justify-content: space-between; align-items: center; color: var(--soft); font-size: 13px; }
+  .metric-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; margin-top: 32px; }
+  .metric {
+    min-height: 112px; padding: 20px; border-radius: 24px; background: rgba(255,255,255,.78);
+    border: 1px solid rgba(255,255,255,.9);
+  }
+  .metric strong { display: block; font-size: 34px; letter-spacing: -.03em; }
+  .metric span { color: var(--muted); font-size: 14px; }
 
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: 1fr; }
-    .contact-list { flex-direction: column; }
-    .hero h1 { font-size: 30px; }
-    .proj-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+  section { padding: 72px 0; }
+  .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+  h2 { font-size: clamp(34px, 5vw, 56px); line-height: 1.04; letter-spacing: -.045em; }
+  .section-note { max-width: 360px; color: var(--muted); font-size: 17px; }
+
+  .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .feature-card {
+    min-height: 260px; padding: 26px; border-radius: var(--radius);
+    background: var(--card-solid); box-shadow: 0 10px 35px rgba(0,0,0,.05);
+  }
+  .feature-card:nth-child(1), .feature-card:nth-child(2) { grid-column: span 2; }
+  .feature-card h3 { font-size: 24px; letter-spacing: -.025em; margin-bottom: 10px; }
+  .feature-card p { color: var(--muted); font-size: 16px; max-width: 420px; }
+  .tag { display: inline-flex; margin-top: 22px; color: var(--accent); font-size: 13px; font-weight: 700; }
+
+  .work-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; }
+  .work-card {
+    min-height: 270px; display: flex; flex-direction: column; justify-content: space-between;
+    padding: 30px; border-radius: var(--radius); background: #fff; overflow: hidden;
+    box-shadow: 0 10px 35px rgba(0,0,0,.05); position: relative;
+  }
+  .work-card.featured { min-height: 554px; background: linear-gradient(145deg, #101014, #2b2b31); color: #fff; }
+  .work-card.featured::after {
+    content: ""; position: absolute; width: 360px; height: 360px; right: -120px; bottom: -120px;
+    border-radius: 50%; background: radial-gradient(circle, rgba(0,113,227,.75), transparent 62%);
+  }
+  .work-card h3 { position: relative; z-index: 1; font-size: clamp(28px, 4vw, 48px); line-height: 1.06; letter-spacing: -.04em; }
+  .work-card p { position: relative; z-index: 1; margin-top: 12px; color: inherit; opacity: .72; font-size: 17px; max-width: 460px; }
+  .work-card .open-link { position: relative; z-index: 1; color: var(--accent); font-weight: 700; margin-top: 22px; }
+  .work-card.featured .open-link { color: #66b2ff; }
+  .work-side { display: grid; gap: 14px; }
+
+  .contact-panel {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;
+  }
+  .contact-item { padding: 24px; border-radius: var(--radius); background: rgba(255,255,255,.78); border: 1px solid rgba(255,255,255,.9); }
+  .ci-label { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+  .ci-value { font-size: 18px; font-weight: 700; }
+
+  footer { display: flex; justify-content: space-between; gap: 20px; padding: 46px 0; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+
+  @media (max-width: 820px) {
+    .wrap { width: min(100% - 28px, 1120px); }
+    .links { gap: 16px; }
+    .hero { padding-top: 48px; }
+    .device-screen { padding: 22px; }
+    .metric-grid, .work-grid, .contact-panel { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .feature-card:nth-child(1), .feature-card:nth-child(2) { grid-column: auto; }
+    .work-card.featured { min-height: 390px; }
+    .section-head { display: block; }
+    .section-note { margin-top: 12px; }
+    footer { flex-direction: column; }
+  }
+  @media (max-width: 520px) {
+    nav { height: 58px; }
+    nav::before { height: 58px; }
+    .links { font-size: 12px; gap: 12px; }
+    .hero { min-height: auto; padding-bottom: 58px; }
+    .hero h1 { font-size: 46px; }
+    .hero p { font-size: 20px; }
+    .hero-device { border-radius: 30px; padding: 8px; }
+    .device-screen { min-height: 230px; border-radius: 22px; }
+    section { padding: 50px 0; }
+    .feature-card, .work-card, .contact-item { border-radius: 22px; padding: 22px; }
   }
 </style>
 </head>
 <body>
 
-<!-- lock -->
 <div id="lock-screen">
-  <div class="lock-name">NIAN</div>
-  <div class="lock-sub">输入密码以访问</div>
-  <input type="password" id="pwd-input" placeholder="······" autofocus>
-  <button onclick="unlock()">进入</button>
-  <div class="lock-err" id="lock-err"></div>
+  <div class="lock-panel">
+    <div class="lock-name">NIAN</div>
+    <div class="lock-sub">输入密码以访问</div>
+    <input type="password" id="pwd-input" placeholder="......" autofocus>
+    <button onclick="unlock()">进入</button>
+    <div class="lock-err" id="lock-err"></div>
+  </div>
 </div>
 <script>
 function unlock(){
@@ -142,111 +224,118 @@ document.getElementById('pwd-input').addEventListener('keydown', function(e){
 });
 </script>
 
-<!-- main -->
 <div id="main">
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#top">NIAN</a>
+      <div class="links">
+        <a href="#about">关于</a>
+        <a href="#work">作品</a>
+        <a href="#contact">联系</a>
+      </div>
+    </nav>
 
-<div class="wrap">
-  <nav>
-    <div class="logo">NIAN</div>
-    <div class="links">
-      <a href="#about">About</a>
-      <a href="#work">Work</a>
-      <a href="#contact">Contact</a>
-    </div>
-  </nav>
+    <main id="top">
+      <section class="hero" aria-label="NIAN 首页">
+        <div class="eyebrow">杭州 · AI · 效率工具</div>
+        <h1>把复杂工作，做成顺手的体验。</h1>
+        <p>我是 NIAN，关注汽车金融、AI Agent、自动化和生活里的高效工具。</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#work">查看作品</a>
+          <a class="btn secondary" href="rebate.html">打开计算器</a>
+        </div>
+        <div class="hero-device" aria-hidden="true">
+          <div class="device-screen">
+            <div class="screen-top"><span>NIAN Workspace</span><span>Live</span></div>
+            <div class="metric-grid">
+              <div class="metric"><strong>AI</strong><span>个人助手、流程自动化、MCP 探索</span></div>
+              <div class="metric"><strong>Auto</strong><span>二手车金融与业务效率</span></div>
+              <div class="metric"><strong>Data</strong><span>周报、指标与可视化</span></div>
+              <div class="metric"><strong>Life</strong><span>短途旅行与简洁生活</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <section class="hero">
-    <h1>你好，我是 NIAN</h1>
-    <p>对技术、设计和效率工具有浓厚的兴趣。相信好的工具能让生活更简单。</p>
-    <div class="loc"><span class="dot"></span> 杭州</div>
-  </section>
+      <section id="about">
+        <div class="section-head">
+          <h2>专注清晰，执行很快。</h2>
+          <p class="section-note">从业务问题出发，用技术把重复动作收束成更轻的流程。</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>技术 &amp; 工具</h3>
+            <p>关注 AI、自动化、效率工具。用 CherryStudio 搭建个人助手，探索智能体应用。</p>
+            <span class="tag">AI Agent</span>
+          </article>
+          <article class="feature-card">
+            <h3>汽车金融</h3>
+            <p>深耕二手车金融，熟悉资方直营订单、平安车贷等业务，用技术提升工作效能。</p>
+            <span class="tag">Auto Finance</span>
+          </article>
+          <article class="feature-card">
+            <h3>旅行</h3>
+            <p>喜欢短途探索，周末常去杭州周边小众目的地。好风景不必远行。</p>
+            <span class="tag">Travel</span>
+          </article>
+          <article class="feature-card">
+            <h3>生活</h3>
+            <p>务实派，追求简洁高效。相信持续学习的力量，也懂得享受生活里的小确幸。</p>
+            <span class="tag">Lifestyle</span>
+          </article>
+        </div>
+      </section>
 
-  <section id="about">
-    <h2>About</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>技术 &amp; 工具</h3>
-        <p>关注 AI、自动化、效率工具。用 CherryStudio 搭建个人助手，探索智能体应用。</p>
-        <span class="tag">AI Agent</span>
-      </div>
-      <div class="card">
-        <h3>汽车金融</h3>
-        <p>深耕二手车金融，熟悉资方直营订单、平安车贷等业务，用技术提升工作效能。</p>
-        <span class="tag">Auto Finance</span>
-      </div>
-      <div class="card">
-        <h3>旅行</h3>
-        <p>喜欢短途探索，周末常去杭州周边小众目的地。好风景不必远行。</p>
-        <span class="tag">Travel</span>
-      </div>
-      <div class="card">
-        <h3>生活</h3>
-        <p>务实派，追求简洁高效。相信持续学习的力量，也懂得享受生活里的小确幸。</p>
-        <span class="tag">Lifestyle</span>
-      </div>
-    </div>
-  </section>
+      <section id="work">
+        <div class="section-head">
+          <h2>近期作品。</h2>
+          <p class="section-note">把旅行、业务和数据工具放在一个个人工作台里。</p>
+        </div>
+        <div class="work-grid">
+          <a class="work-card featured" href="duanwu.html">
+            <div>
+              <h3>端午出游攻略</h3>
+              <p>杭州出发，6 个宝藏目的地。行程、美食、预算一应俱全。</p>
+            </div>
+            <span class="open-link">查看攻略 &gt;</span>
+          </a>
+          <div class="work-side">
+            <a class="work-card" href="rebate.html">
+              <div>
+                <h3>内返请款计算器</h3>
+                <p>输入贷款金额和产品信息，自动计算内返金额。</p>
+              </div>
+              <span class="open-link">打开工具 &gt;</span>
+            </a>
+            <article class="work-card">
+              <div>
+                <h3>BCcode 助手</h3>
+                <p>基于 CherryStudio 的个人 AI 助手，自动化办公、订单查询、智能提醒。</p>
+              </div>
+              <span class="open-link">AI / MCP</span>
+            </article>
+          </div>
+        </div>
+      </section>
 
-  <section id="work">
-    <h2>Work</h2>
-    <div class="proj-list">
-      <div class="proj-item">
-        <div>
-          <h3>端午出游攻略</h3>
-          <p>杭州出发，6个宝藏目的地。行程、美食、预算一应俱全。</p>
+      <section id="contact">
+        <div class="section-head">
+          <h2>保持联系。</h2>
+          <p class="section-note">简单一点，直接一点，最好能马上解决问题。</p>
         </div>
-        <a href="duanwu.html" class="proj-tag">查看</a>
-      </div>
-      <div class="proj-item">
-        <div>
-          <h3>BCcode 助手</h3>
-          <p>基于 CherryStudio 的个人 AI 助手，自动化办公、订单查询、智能提醒。</p>
+        <div class="contact-panel">
+          <div class="contact-item"><div class="ci-label">Email</div><div class="ci-value">nian@email</div></div>
+          <div class="contact-item"><div class="ci-label">WeChat</div><div class="ci-value">扫码联系</div></div>
+          <div class="contact-item"><div class="ci-label">GitHub</div><div class="ci-value">@nian</div></div>
         </div>
-        <span class="proj-tag" style="color:var(--muted);border-color:var(--muted);cursor:default;">AI / MCP</span>
-      </div>
-      <div class="proj-item">
-        <div>
-          <h3>数据周报工具</h3>
-          <p>自动分析小组关键指标，生成可视化周报。</p>
-        </div>
-        <span class="proj-tag" style="color:var(--muted);border-color:var(--muted);cursor:default;">Data</span>
-      </div>
-    </div>
-  </section>
+      </section>
+    </main>
 
-  <section id="contact">
-    <h2>Contact</h2>
-    <div class="contact-list">
-      <div class="contact-item">
-        <div class="ci-symbol">@</div>
-        <div>
-          <div class="ci-label">Email</div>
-          <div class="ci-value">nian@email</div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="ci-symbol">#</div>
-        <div>
-          <div class="ci-label">WeChat</div>
-          <div class="ci-value">扫码联系</div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="ci-symbol">~</div>
-        <div>
-          <div class="ci-label">GitHub</div>
-          <div class="ci-value">@nian</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <span>NIAN &copy; 2026</span>
-    <span>Built with plain HTML</span>
-  </footer>
+    <footer>
+      <span>NIAN &copy; 2026</span>
+      <span>Built with plain HTML</span>
+    </footer>
+  </div>
 </div>
-
-</div><!-- /main -->
 </body>
 </html>

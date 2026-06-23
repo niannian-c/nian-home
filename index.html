@@ -35,75 +35,158 @@
   a:hover { color: var(--accent); }
   button, input { font: inherit; }
 
-  #lock-screen {
-    position: fixed; inset: 0; z-index: 999;
-    display: grid; place-items: center;
-    background:
-      radial-gradient(circle at top, rgba(0,113,227,.18), transparent 34%),
-      linear-gradient(180deg, #fff, #f5f5f7);
-    padding: 24px;
-  }
-  .lock-panel {
-    width: min(360px, 100%);
-    padding: 34px;
-    border: 1px solid rgba(255,255,255,.8);
-    border-radius: 30px;
-    background: rgba(255,255,255,.76);
-    box-shadow: var(--shadow);
-    text-align: center;
-    backdrop-filter: blur(22px);
-  }
-  .lock-name { font-size: 42px; font-weight: 800; letter-spacing: -.03em; }
-  .lock-sub { margin: 8px 0 22px; color: var(--muted); font-size: 15px; }
-  #lock-screen input {
-    width: 100%; height: 48px; padding: 0 18px;
-    border: 1px solid var(--line); border-radius: 999px;
-    background: rgba(255,255,255,.9); text-align: center; outline: none;
-  }
-  #lock-screen input:focus { border-color: rgba(0,113,227,.55); box-shadow: 0 0 0 4px rgba(0,113,227,.12); }
-  #lock-screen button {
-    width: 100%; height: 48px; margin-top: 12px;
-    border: 0; border-radius: 999px;
-    background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;
-  }
-  #lock-screen .lock-err { min-height: 18px; margin-top: 12px; color: #d70015; font-size: 13px; }
+  #main { display: block; }
 
-  #main { display: none; }
-  body.unlocked #lock-screen { display: none; }
-  body.unlocked #main { display: block; }
-
-  /* 门户双入口 */
+  /* 门户双入口 — Apple 风格 */
   .portal {
-    min-height: 100vh; display: grid; place-items: center; padding: 40px;
-    display: none;
+    min-height: 100vh; display: none; align-items: center; justify-content: center;
+    padding: 40px;
+    background: linear-gradient(180deg, #faf9f6 0%, #f5f2ed 100%);
   }
-  body.portal-mode .portal { display: grid; }
+  body.portal-mode .portal { display: flex; }
   body.portal-mode #main-content { display: none; }
-  .portal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 620px; width: 100%; }
-  .portal-card {
-    min-height: 340px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
-    border-radius: var(--radius);
-    background: rgba(255,255,255,.72);
-    backdrop-filter: saturate(180%) blur(22px);
-    border: 1px solid rgba(255,255,255,.85);
-    box-shadow: 0 8px 32px rgba(0,0,0,.06);
-    cursor: pointer; transition: all .35s; text-decoration: none; color: inherit;
-  }
-  .portal-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,.10); }
-  .portal-card .portal-emoji { font-size: 56px; }
-  .portal-card h3 { font-size: 26px; font-weight: 800; letter-spacing: -.03em; }
-  .portal-card p { color: var(--muted); font-size: 14px; }
-  .portal-card.work-card-portal:hover { background: rgba(0,113,227,.06); }
-  .portal-card.life-card-portal:hover { background: rgba(52,199,89,.06); }
 
-  .back-btn { display: none; cursor: pointer; }
-  body.work-mode .back-btn { display: block; }
+  .portal-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+    max-width: 960px; width: 100%;
+  }
+  .portal-card {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; padding: 64px 40px;
+    border-radius: 28px; cursor: pointer; transition: all .4s ease;
+    background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+    text-decoration: none; color: #1d1d1f; position: relative; overflow: hidden;
+  }
+  .portal-card::before {
+    content: ""; position: absolute; inset: 0; border-radius: 28px; z-index: 0;
+    opacity: 0; transition: opacity .4s;
+  }
+  .portal-card.work-card-portal::before {
+    background: linear-gradient(160deg, rgba(0,113,227,.04) 0%, rgba(0,113,227,.01) 60%);
+  }
+  .portal-card.life-card-portal::before {
+    background: linear-gradient(160deg, rgba(124,58,237,.04) 0%, rgba(124,58,237,.01) 60%);
+  }
+  .portal-card:hover::before { opacity: 1; }
+  .portal-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 28px 80px rgba(0,0,0,.12), 0 4px 16px rgba(0,0,0,.08);
+  }
+
+  /* 水纹涟漪 */
+  .portal-card .ripple {
+    position: absolute; border-radius: 50%; z-index: 0;
+    background: radial-gradient(circle, rgba(255,255,255,.5) 0%, transparent 70%);
+    transform: scale(0); animation: ripple-anim .8s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+  /* 点击进入过渡 */
+  .portal-card.entering {
+    animation: card-enter .6s cubic-bezier(.25,.1,.25,1) forwards;
+    pointer-events: none;
+  }
+  @keyframes card-enter {
+    0% { transform: scale(1); opacity: 1; }
+    40% { transform: scale(1.08); opacity: .9; }
+    100% { transform: scale(1.25); opacity: 0; }
+  }
+
+  .portal-card .portal-content { position: relative; z-index: 1; text-align: center; }
+  .portal-card .portal-icon {
+    width: 56px; height: 56px; border-radius: 18px; margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .3s;
+  }
+  .portal-card:hover .portal-icon { transform: scale(1.06); }
+  .portal-card.work-card-portal .portal-icon {
+    background: linear-gradient(135deg, #0071e3, #5ac8fa);
+    box-shadow: 0 4px 16px rgba(0,113,227,.25);
+  }
+  .portal-card.life-card-portal .portal-icon {
+    background: linear-gradient(135deg, #7c3aed, #c084fc);
+    box-shadow: 0 4px 16px rgba(124,58,237,.25);
+  }
+  .portal-card.calc-card-portal .portal-icon {
+    background: linear-gradient(135deg, #f97316, #fb923c);
+    box-shadow: 0 4px 16px rgba(249,115,22,.25);
+  }
+  .portal-card.calc-card-portal .portal-enter span { color: #f97316; }
+  .portal-card h3 {
+    font-size: 28px; font-weight: 700; letter-spacing: -.02em; margin: 0;
+  }
+  .portal-card p { font-size: 15px; color: #86868b; margin: 0; }
+  .portal-card .portal-enter {
+    margin-top: 12px; font-size: 14px; font-weight: 500; transition: .2s;
+  }
+  .portal-card .portal-enter span {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 24px; border-radius: 40px;
+    background: rgba(0,0,0,.04);
+    transition: all .3s;
+  }
+  .portal-card.work-card-portal .portal-enter span { color: #0071e3; }
+  .portal-card.life-card-portal .portal-enter span { color: #7c3aed; }
+  .portal-card:hover .portal-enter span {
+    background: rgba(0,0,0,.08);
+  }
+
+  .back-btn {
+    position: fixed; top: 18px; left: 24px; z-index: 30;
+    display: none; align-items: center; gap: 4px; cursor: pointer;
+    padding: 10px 18px; border-radius: 28px;
+    background: rgba(255,255,255,.72);
+    backdrop-filter: saturate(180%) blur(16px);
+    border: 1px solid rgba(255,255,255,.82);
+    box-shadow: 0 2px 12px rgba(0,0,0,.05);
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    transition: all .2s;
+  }
+  .back-btn:hover { background: rgba(255,255,255,.9); color: var(--fg); }
+  body.work-mode .back-btn { display: inline-flex; }
+  body.work-mode .portal { display: none; }
+  body.work-mode #main-content { display: block; }
+
+  /* 个人密码弹窗 */
+  .life-modal {
+    position: fixed; inset: 0; z-index: 999; display: none;
+    align-items: center; justify-content: center;
+    background: rgba(0,0,0,.32); backdrop-filter: blur(6px); padding: 24px;
+  }
+  .life-modal.show { display: flex; }
+  .life-modal-panel {
+    width: min(320px, 100%); padding: 32px 28px;
+    border-radius: 24px; background: #fff; box-shadow: 0 24px 70px rgba(0,0,0,.15);
+    text-align: center;
+  }
+  .life-modal-panel h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .life-modal-panel .lm-sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+  .life-modal-panel input {
+    width: 100%; height: 46px; padding: 0 16px; margin-bottom: 12px;
+    border: 1px solid var(--line); border-radius: 12px;
+    text-align: center; font-size: 15px; outline: none; font-family: inherit;
+  }
+  .life-modal-panel input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+  .life-modal-panel button {
+    width: 100%; height: 46px; border: 0; border-radius: 12px;
+    background: linear-gradient(135deg, #7c3aed, #a78bfa); color: #fff;
+    font-weight: 600; font-size: 15px; cursor: pointer; font-family: inherit;
+  }
+  .life-modal .lm-err { color: #d70015; font-size: 12px; margin-top: 8px; min-height: 16px; }
+
+  @media (max-width: 780px) {
+    .portal-grid { grid-template-columns: 1fr; max-width: 420px; }
+    .portal-card { padding: 48px 28px; }
+  }
+
+
   body.work-mode .portal { display: none; }
   body.work-mode #main-content { display: block; }
 
   @media (max-width: 600px) {
     .portal-grid { grid-template-columns: 1fr; }
-    .portal-card { min-height: 200px; }
+    .portal-card { min-height: 50vh; }
   }
 
   .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
@@ -293,50 +376,85 @@
 </head>
 <body>
 
-<div id="lock-screen">
-  <div class="lock-panel">
-    <div class="lock-name">NIAN</div>
-    <div class="lock-sub">输入密码以访问</div>
-    <input type="password" id="pwd-input" placeholder="......" autofocus>
-    <button onclick="unlock()">进入</button>
-    <div class="lock-err" id="lock-err"></div>
-  </div>
-</div>
 <script>
-function unlock(){
-  if (btoa(document.getElementById('pwd-input').value) === 'MTE2ODIw') {
-    document.body.classList.add('unlocked');
-  } else {
-    document.getElementById('lock-err').textContent = '密码错误';
-    document.getElementById('pwd-input').value = '';
-  }
+
+function createRipple(e, card) {
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  const rect = card.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  card.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 800);
 }
-document.getElementById('pwd-input').addEventListener('keydown', function(e){
-  if (e.key === 'Enter') unlock();
-});
 
 function enterPortal(mode) {
-  document.body.classList.add('portal-mode');
-  if (mode === 'work') {
-    document.body.classList.remove('portal-mode');
-    document.body.classList.add('work-mode');
+  // find the clicked card
+  const card = document.querySelector('.portal-card.' +
+    (mode==='calc'?'calc-card-portal':mode==='work'?'work-card-portal':'life-card-portal'));
+  if (card && event) { createRipple(event, card); }
+
+  // entering animation
+  if (card && mode === 'calc') {
+    card.classList.add('entering');
+    setTimeout(() => { window.location.href = 'rebate.html'; }, 500);
+    return;
   }
-  if (mode === 'life') {
-    // 生活入口待开发
+
+  // 密码验证前也做动画
+  if (card && (mode === 'work' || mode === 'life')) {
+    card.classList.add('entering');
+    setTimeout(() => {
+      card.classList.remove('entering');
+      if (mode === 'work') {
+        document.getElementById('modal-title').textContent = '工作';
+        document.getElementById('life-modal').classList.add('show');
+        document.getElementById('life-modal').setAttribute('data-mode','work');
+      }
+      if (mode === 'life') {
+        document.getElementById('modal-title').textContent = '个人';
+        document.getElementById('life-modal').classList.add('show');
+        document.getElementById('life-modal').setAttribute('data-mode','life');
+      }
+    }, 450);
+    return;
+  }
+
+  if (mode === 'calc') {
+    window.location.href = 'rebate.html';
   }
 }
+var currentMode = '';
+function checkLifePwd() {
+  if (btoa(document.getElementById('life-pwd').value) === 'MTE2ODIw') {
+    document.getElementById('life-modal').classList.remove('show');
+    document.getElementById('life-pwd').value = '';
+    document.getElementById('lm-err').textContent = '';
+    var mode = document.getElementById('life-modal').getAttribute('data-mode') || 'life';
+    if (mode === 'work') {
+      document.body.classList.remove('portal-mode');
+      document.body.classList.add('work-mode');
+    } else {
+      alert('个人空间建设中，敬请期待');
+    }
+  } else {
+    document.getElementById('lm-err').textContent = '密码错误';
+    document.getElementById('life-pwd').value = '';
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('life-pwd').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkLifePwd();
+  });
+});
 function goPortal() {
   document.body.classList.remove('work-mode');
   document.body.classList.add('portal-mode');
 }
-// 解锁后默认显示门户
-(function(){
-  const orig = unlock;
-  unlock = function(){
-    orig();
-    setTimeout(function(){ document.body.classList.add('portal-mode'); }, 50);
-  };
-})();
+// 默认显示门户
+document.body.classList.add('portal-mode');
 </script>
 
 <div id="main">
@@ -344,20 +462,45 @@ function goPortal() {
   <!-- 门户入口 -->
   <div class="portal">
     <div class="portal-grid">
-      <div class="portal-card life-card-portal" onclick="enterPortal('life')">
-        <div class="portal-emoji">🌿</div>
-        <h3>生活</h3>
-        <p>旅行 · 摄影 · 日常</p>
-      </div>
       <div class="portal-card work-card-portal" onclick="enterPortal('work')">
-        <div class="portal-emoji">⚡</div>
-        <h3>工作</h3>
-        <p>金融 · 效率工具 · AI</p>
+        <div class="portal-content">
+          <div class="portal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="8" height="7" rx="1"/><rect x="14" y="3" width="8" height="7" rx="1"/><rect x="2" y="14" width="8" height="7" rx="1"/><rect x="14" y="14" width="8" height="7" rx="1"/></svg></div>
+          <h3>工作</h3>
+          <div class="portal-enter"><span>进入</span></div>
+        </div>
+      </div>
+      <div class="portal-card life-card-portal" onclick="enterPortal('life')">
+        <div class="portal-content">
+          <div class="portal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg></div>
+          <h3 id="modal-title">个人</h3>
+          <div class="portal-enter"><span>进入</span></div>
+        </div>
+      </div>
+      <div class="portal-card calc-card-portal" onclick="enterPortal('calc')">
+        <div class="portal-content">
+          <div class="portal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg></div>
+          <h3>计算器</h3>
+          <div class="portal-enter"><span>进入</span></div>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- 个人密码弹窗 -->
+  <div class="life-modal" id="life-modal">
+    <div class="life-modal-panel">
+      <h3 id="modal-title">个人</h3>
+      <div class="lm-sub">请输入密码</div>
+      <input type="password" id="life-pwd" placeholder="······" autocomplete="off">
+      <button onclick="checkLifePwd()">进入</button>
+      <div class="lm-err" id="lm-err"></div>
+    </div>
+  </div>
+</div>
+
   <!-- 工作内容 -->
+  <div class="back-btn" onclick="goPortal()">← 返回</div>
+
   <div id="main-content">
   <nav class="side-dots">
     <a class="side-dot active" href="#hero" title="首页">首页</a>
@@ -368,7 +511,7 @@ function goPortal() {
     <nav>
       <a class="logo" href="#top">NIAN</a>
       <div class="links">
-        <span class="back-btn" onclick="goPortal()">← 返回</span>
+        
         <a href="#about">关于</a>
         <a href="#work">作品</a>
       </div>
@@ -380,7 +523,6 @@ function goPortal() {
         <h1>把复杂工作，做成顺手的体验。</h1>
                 <div class="hero-actions">
           <a class="btn primary" href="#work">查看作品</a>
-          <a class="btn secondary" href="rebate.html">打开计算器</a>
         </div>
         <div class="duty-card-wrapper">
           <div class="duty-card" onclick="this.classList.toggle('open')">
@@ -437,15 +579,6 @@ function goPortal() {
         <div class="section-head">
           <h2>近期作品。</h2>
           <p class="section-note">把业务和效率工具放在一个个人工作台里。</p>
-        </div>
-        <div class="work-grid">
-          <a class="work-card featured" href="rebate.html">
-            <div>
-              <h3>内返请款计算器</h3>
-              <p>输入贷款金额和产品信息，自动计算内返金额。</p>
-            </div>
-            <span class="open-link">打开工具 &gt;</span>
-          </a>
         </div>
       </section>
     </main>

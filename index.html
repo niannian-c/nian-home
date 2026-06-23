@@ -72,6 +72,40 @@
   body.unlocked #lock-screen { display: none; }
   body.unlocked #main { display: block; }
 
+  /* 门户双入口 */
+  .portal {
+    min-height: 100vh; display: grid; place-items: center; padding: 40px;
+    display: none;
+  }
+  body.portal-mode .portal { display: grid; }
+  body.portal-mode #main-content { display: none; }
+  .portal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 620px; width: 100%; }
+  .portal-card {
+    min-height: 340px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+    border-radius: var(--radius);
+    background: rgba(255,255,255,.72);
+    backdrop-filter: saturate(180%) blur(22px);
+    border: 1px solid rgba(255,255,255,.85);
+    box-shadow: 0 8px 32px rgba(0,0,0,.06);
+    cursor: pointer; transition: all .35s; text-decoration: none; color: inherit;
+  }
+  .portal-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,.10); }
+  .portal-card .portal-emoji { font-size: 56px; }
+  .portal-card h3 { font-size: 26px; font-weight: 800; letter-spacing: -.03em; }
+  .portal-card p { color: var(--muted); font-size: 14px; }
+  .portal-card.work-card-portal:hover { background: rgba(0,113,227,.06); }
+  .portal-card.life-card-portal:hover { background: rgba(52,199,89,.06); }
+
+  .back-btn { display: none; cursor: pointer; }
+  body.work-mode .back-btn { display: block; }
+  body.work-mode .portal { display: none; }
+  body.work-mode #main-content { display: block; }
+
+  @media (max-width: 600px) {
+    .portal-grid { grid-template-columns: 1fr; }
+    .portal-card { min-height: 200px; }
+  }
+
   .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
   nav {
     position: sticky; top: 12px; z-index: 10;
@@ -106,6 +140,45 @@
     color: var(--muted); font-size: clamp(19px, 2.5vw, 28px); line-height: 1.25;
   }
   .hero-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
+
+  /* 值班倒计时卡片 */
+  .duty-card-wrapper { margin-top: 28px; display: inline-flex; flex-direction: column; align-items: center; }
+  .duty-card {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 14px 24px; border-radius: 999px;
+    background: rgba(255,255,255,.68);
+    backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid rgba(255,255,255,.82);
+    box-shadow: 0 4px 20px rgba(0,0,0,.05);
+    font-size: 15px; cursor: pointer; transition: .25s;
+  }
+  .duty-card:hover { transform: scale(1.03); }
+  .duty-card .duty-label { color: var(--muted); font-size: 13px; }
+  .duty-card .duty-date { font-weight: 700; font-size: 16px; }
+  .duty-card .duty-countdown {
+    padding: 5px 14px; border-radius: 999px;
+    background: rgba(0,113,227,.1); color: var(--accent);
+    font-weight: 700; font-size: 14px;
+  }
+  .duty-card .duty-arrow { color: var(--muted); font-size: 12px; transition: .25s; }
+  .duty-card.open .duty-arrow { transform: rotate(180deg); }
+
+  .duty-detail {
+    max-height: 0; overflow: hidden; transition: max-height .4s ease;
+    margin-top: 0; font-size: 13px; color: var(--fg);
+  }
+  .duty-card.open + .duty-detail { max-height: 400px; margin-top: 14px; }
+  .duty-detail-inner {
+    display: inline-block; text-align: left; padding: 18px 24px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.72);
+    backdrop-filter: saturate(180%) blur(18px);
+    border: 1px solid rgba(255,255,255,.82);
+    box-shadow: 0 4px 20px rgba(0,0,0,.05);
+    line-height: 1.8;
+  }
+  .duty-detail h4 { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+  .duty-detail h4:not(:first-child) { margin-top: 14px; }
   .btn {
     display: inline-flex; align-items: center; justify-content: center;
     min-height: 44px; padding: 0 22px; border-radius: 999px;
@@ -241,9 +314,51 @@ function unlock(){
 document.getElementById('pwd-input').addEventListener('keydown', function(e){
   if (e.key === 'Enter') unlock();
 });
+
+function enterPortal(mode) {
+  document.body.classList.add('portal-mode');
+  if (mode === 'work') {
+    document.body.classList.remove('portal-mode');
+    document.body.classList.add('work-mode');
+  }
+  if (mode === 'life') {
+    // 生活入口待开发
+  }
+}
+function goPortal() {
+  document.body.classList.remove('work-mode');
+  document.body.classList.add('portal-mode');
+}
+// 解锁后默认显示门户
+(function(){
+  const orig = unlock;
+  unlock = function(){
+    orig();
+    setTimeout(function(){ document.body.classList.add('portal-mode'); }, 50);
+  };
+})();
 </script>
 
 <div id="main">
+
+  <!-- 门户入口 -->
+  <div class="portal">
+    <div class="portal-grid">
+      <div class="portal-card life-card-portal" onclick="enterPortal('life')">
+        <div class="portal-emoji">🌿</div>
+        <h3>生活</h3>
+        <p>旅行 · 摄影 · 日常</p>
+      </div>
+      <div class="portal-card work-card-portal" onclick="enterPortal('work')">
+        <div class="portal-emoji">⚡</div>
+        <h3>工作</h3>
+        <p>金融 · 效率工具 · AI</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 工作内容 -->
+  <div id="main-content">
   <nav class="side-dots">
     <a class="side-dot active" href="#hero" title="首页">首页</a>
     <a class="side-dot" href="#about" title="关于">关于</a>
@@ -253,6 +368,7 @@ document.getElementById('pwd-input').addEventListener('keydown', function(e){
     <nav>
       <a class="logo" href="#top">NIAN</a>
       <div class="links">
+        <span class="back-btn" onclick="goPortal()">← 返回</span>
         <a href="#about">关于</a>
         <a href="#work">作品</a>
       </div>
@@ -265,6 +381,26 @@ document.getElementById('pwd-input').addEventListener('keydown', function(e){
                 <div class="hero-actions">
           <a class="btn primary" href="#work">查看作品</a>
           <a class="btn secondary" href="rebate.html">打开计算器</a>
+        </div>
+        <div class="duty-card-wrapper">
+          <div class="duty-card" onclick="this.classList.toggle('open')">
+            <span class="duty-label">崔世辉 · 下次值班</span>
+            <span class="duty-date" id="duty-date">7月4日</span>
+            <span class="duty-countdown" id="duty-countdown"></span>
+            <span class="duty-arrow">&#9660;</span>
+          </div>
+          <div class="duty-detail">
+            <div class="duty-detail-inner">
+              <h4>周末 / 节假日值班</h4>
+              7月4日&emsp;7月25日<br>
+              8月15日&emsp;9月5日&emsp;9月26日<br>
+              10月5日&emsp;10月24日<br>
+              11月14日&emsp;12月5日&emsp;12月26日
+              <h4>工作日中午值班</h4>
+              7月27日-31日<br>
+              9月7日-11日
+            </div>
+          </div>
         </div>
         <div class="hero-device" aria-hidden="true">
           <div class="device-screen">
@@ -319,6 +455,7 @@ document.getElementById('pwd-input').addEventListener('keydown', function(e){
       <span>Built with plain HTML</span>
     </footer>
   </div>
+</div><!-- /main-content -->
 </div>
 
 <script>
@@ -332,6 +469,25 @@ window.addEventListener('scroll', () => {
   });
   dots.forEach((d, i) => d.classList.toggle('active', i === active));
 });
+
+// 值班倒计时 - 崔世辉
+const cuiDates = [
+  '2026-07-04','2026-07-25','2026-08-15',
+  '2026-09-05','2026-09-26','2026-10-05','2026-10-24',
+  '2026-11-14','2026-12-05','2026-12-26'
+].map(d => new Date(d + 'T00:00:00+08:00'));
+
+function updateDuty() {
+  const now = new Date();
+  const next = cuiDates.find(d => d > now);
+  if (!next) return;
+  const diff = Math.ceil((next - now) / 86400000);
+  const m = next.getMonth() + 1;
+  const d = next.getDate();
+  document.getElementById('duty-date').textContent = m + '月' + d + '日';
+  document.getElementById('duty-countdown').textContent = diff === 0 ? '今天' : '还有 ' + diff + ' 天';
+}
+updateDuty();
 </script>
 </body>
 </html>
